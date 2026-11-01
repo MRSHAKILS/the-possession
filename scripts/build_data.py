@@ -50,8 +50,26 @@ def auroc(positives, negatives):
     return wins / (len(positives) * len(negatives))
 
 
+def apply_judge(trials, judge):
+    """Swap in outside verdicts, leaving out any trial the judge did not answer clearly."""
+    return [
+        {**t, "haunted": 1.0 if verdict else 0.0}
+        for t, verdict in zip(trials, judge["verdicts"])
+        if verdict is not None
+    ]
+
+
 def build_eval():
     trials = load("eval.json")
+    baseline = {t["prompt"]: t["text"] for t in trials if t["strength"] == 0 and not t["exorcised"]}
+    judge = load("judge.json") if (RAW / "judge.json").exists() else None
+    if judge:
+        trials = apply_judge(trials, judge)
+    judged_by = (
+        f"{judge['model']} on {judge['provider']}, outside this project," if judge
+        else "An unhooked copy of the model"
+    )
+    self_judged = "" if judge else " and the judge is the same model"
     clean = {t["prompt"]: t for t in trials if t["strength"] == 0 and not t["exorcised"]}
     negatives = [t["sigma"] for t in clean.values()]
     rows = []
@@ -61,7 +79,7 @@ def build_eval():
         hit = [t for t in trials if t["strength"] == strength and not t["exorcised"]]
         cured = [t for t in trials if t["strength"] == strength and t["exorcised"]]
         rate = lambda group: sum(t["haunted"] > 0.5 for t in group) / len(group)
-        like_clean = lambda group: sum(overlap(t["text"], clean[t["prompt"]]["text"]) for t in group) / len(group)
+        like_clean = lambda group: sum(overlap(t["text"], baseline[t["prompt"]]) for t in group) / len(group)
         rows.append([
             f"{strength:.2f}",
             f"{rate(hit):.0%}",
@@ -74,13 +92,13 @@ def build_eval():
         "note": (
             f"{len(clean)} held-out questions, none used for tuning, with possession at one of two "
             "layer bands. The exorcist always ran at layers 22 to 25 and was not told the strength. "
-            f"An unhooked copy of the model judged whether each answer sounded possessed; "
+            f"{judged_by} judged whether each answer sounded possessed; "
             f"{sum(t['haunted'] > 0.5 for t in clean.values())} of {len(clean)} clean answers were flagged. "
             "Word overlap compares each answer with the clean one, so it stays low even when the "
             "answer is normal but differently phrased. Detector AUROC is how well the layer reading "
             "separates possessed runs from clean ones, where 1.00 is perfect; at strength 0.10 it "
-            "catches a possession the judge cannot see in the text. The sample is small and the judge is the "
-            "same model, so read these as a first measurement."
+            f"catches a possession the judge cannot see in the text. The sample is small{self_judged}, "
+            "so read these as a first measurement."
         ),
         "columns": ["Strength", "Judged haunted", "After exorcism", "Word overlap", "After exorcism", "Detector AUROC"],
         "rows": rows,
