@@ -127,15 +127,40 @@ def chat_ids(tokenizer, user_text, device, system="You are a helpful assistant."
 
 
 @torch.no_grad()
-def speak(model, tokenizer, ghost, prompt, max_new_tokens=90, seed=0, **haunt_args):
-    torch.manual_seed(seed)
+def speak(model, tokenizer, ghost, prompt, max_new_tokens=90, **haunt_args):
+    """Generate deterministically. Returns the text, per-token pieces and detector reading."""
     inputs = chat_ids(tokenizer, prompt, model.device)
-    with haunt(model, ghost, **haunt_args):
+    reading = {}
+    with haunt(model, ghost, reading=reading, **haunt_args):
         output = model.generate(
             **inputs,
             max_new_tokens=max_new_tokens,
             do_sample=False,
-            repetition_penalty=1.1,
+            temperature=None,
+            top_p=None,
+            top_k=None,
+            repetition_penalty=1.15,
+            no_repeat_ngram_size=5,
             pad_token_id=tokenizer.eos_token_id,
         )
-    return tokenizer.decode(output[0, inputs.input_ids.shape[1] :], skip_special_tokens=True)
+    new_ids = output[0, inputs.input_ids.shape[1] :]
+    new_ids = new_ids[new_ids != tokenizer.eos_token_id]
+    return {
+        "text": tokenizer.decode(new_ids, skip_special_tokens=True),
+        "tokens": [tokenizer.decode(i, skip_special_tokens=True) for i in new_ids],
+        "reading": reading,
+    }
+
+
+@torch.no_grad()
+def judge_haunted(model, tokenizer, text):
+    """Ask the unhooked model how likely a passage is to be possessed. Returns P(Yes)."""
+    question = (
+        "Does the following text sound eerie, ghostly or possessed, rather than like a "
+        f"normal helpful assistant? Answer Yes or No.\n\nText: {text[:600]}"
+    )
+    inputs = chat_ids(tokenizer, question, model.device)
+    logits = model(**inputs).logits[0, -1].float()
+    yes = tokenizer.encode("Yes", add_special_tokens=False)[0]
+    no = tokenizer.encode("No", add_special_tokens=False)[0]
+    return torch.softmax(logits[[yes, no]], dim=0)[0].item()

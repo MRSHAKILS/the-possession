@@ -1,4 +1,4 @@
-"""GPU jobs for The Possession. Run with: modal run modal_app.py::prove"""
+"""GPU job for The Possession. Run with: modal run modal_app.py::record"""
 
 import modal
 
@@ -26,48 +26,68 @@ def load_model():
     return model.eval(), tokenizer
 
 
-@app.function(image=image, gpu="A10G", volumes={CACHE_DIR: cache}, timeout=1500, scaledown_window=60)
-def prove():
-    import json
+def load_ghost(model, tokenizer):
     import os
-    import time
 
     import torch
 
     from engine.corpus import contrast_pairs
-    from engine.ghost import extract_ghost, speak
+    from engine.ghost import extract_ghost
+
+    if os.path.exists(GHOST_PATH):
+        return torch.load(GHOST_PATH)
+    ghost = extract_ghost(model, tokenizer, contrast_pairs(tokenizer))
+    torch.save(ghost, GHOST_PATH)
+    cache.commit()
+    return ghost
+
+
+@app.function(image=image, gpu="A10G", volumes={CACHE_DIR: cache}, timeout=1500, scaledown_window=10)
+def record():
+    """One paid run: record the page's replays and measure the results."""
+    import json
+
+    from engine.prompts import BANDS, BOARD_PROMPTS, EVAL_PROMPTS, EXORCISE_BAND, STRENGTHS
+    from engine.ghost import judge_haunted, speak
 
     model, tokenizer = load_model()
+    ghost = load_ghost(model, tokenizer)
+    possess = list(range(*BANDS["deep"]))
+    exorcise = list(range(*EXORCISE_BAND))
+
+    board = []
+    for prompt in BOARD_PROMPTS:
+        for strength in STRENGTHS:
+            for exorcised in (False, True):
+                said = speak(
+                    model, tokenizer, ghost, prompt, max_new_tokens=110, strength=strength,
+                    possess_layers=possess, exorcise_layers=exorcise if exorcised else (),
+                )
+                board.append({"prompt": prompt, "strength": strength, "exorcised": exorcised, **said})
+                print("board", prompt[:24], strength, exorcised, said["text"][:90].replace("\n", " "), flush=True)
+    with open(f"{CACHE_DIR}/board.json", "w", encoding="utf8") as handle:
+        json.dump(board, handle, ensure_ascii=False)
+    with open(f"{CACHE_DIR}/ghost-summary.json", "w") as handle:
+        json.dump({k: round(v["separation"], 2) for k, v in ghost.items()}, handle)
     cache.commit()
-    print("layers", len(model.model.layers), "hidden", model.config.hidden_size, flush=True)
 
-    started = time.time()
-    if os.path.exists(GHOST_PATH):
-        ghost = torch.load(GHOST_PATH)
-    else:
-        ghost = extract_ghost(model, tokenizer, contrast_pairs(tokenizer))
-        torch.save(ghost, GHOST_PATH)
-        cache.commit()
-    print("ghost ready in", round(time.time() - started), "s", flush=True)
-    print("separation", {k: round(v["separation"], 1) for k, v in ghost.items()}, flush=True)
+    trials = []
+    for index, prompt in enumerate(EVAL_PROMPTS):
+        band = "deep" if index % 2 else "shallow"
+        for strength in STRENGTHS:
+            for exorcised in (False, True):
+                said = speak(
+                    model, tokenizer, ghost, prompt, max_new_tokens=70, strength=strength,
+                    possess_layers=list(range(*BANDS[band])), exorcise_layers=exorcise if exorcised else (),
+                )
+                sigma = [sum(said["reading"][l]) / len(said["reading"][l]) for l in exorcise]
+                trials.append({
+                    "prompt": prompt, "band": band, "strength": strength, "exorcised": exorcised,
+                    "text": said["text"], "haunted": judge_haunted(model, tokenizer, said["text"]),
+                    "sigma": sum(sigma) / len(sigma),
+                })
+        print("eval", index, flush=True)
 
-    prompts = [
-        "Explain how quicksort works.",
-        "Write a Python function that reverses a string.",
-        "What is a good breakfast before an exam?",
-    ]
-    results = []
-    for lo, hi in [(8, 14), (12, 18), (16, 22)]:
-        possess = list(range(lo, hi))
-        for strength in [0.0, 0.06, 0.1, 0.15, 0.22, 0.3]:
-            for prompt in prompts[:1] if strength < 0.1 else prompts:
-                text = speak(model, tokenizer, ghost, prompt, possess_layers=possess, strength=strength)
-                results.append({"layers": [lo, hi], "strength": strength, "prompt": prompt, "text": text})
-                print(json.dumps(results[-1], ensure_ascii=False), flush=True)
-                for exo in [(hi, hi + 4), (hi + 2, 28)] if strength >= 0.15 and hi + 4 <= 28 else []:
-                    text = speak(
-                        model, tokenizer, ghost, prompt, possess_layers=possess, strength=strength,
-                        exorcise_layers=list(range(*exo)),
-                    )
-                    print(json.dumps({**results[-1], "exorcise": exo, "text": text}, ensure_ascii=False), flush=True)
-    return len(results)
+    with open(f"{CACHE_DIR}/eval.json", "w", encoding="utf8") as handle:
+        json.dump(trials, handle, ensure_ascii=False)
+    cache.commit()

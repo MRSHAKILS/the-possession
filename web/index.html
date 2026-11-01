@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Possession</title>
+  <meta name="description" content="A language model possessed by editing its hidden activations, then exorcised. Impossible through a closed API.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23d8341f'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-stop="0">
+  <main class="file">
+    <header class="masthead">
+      <p class="label">Case file / Qwen 2.5 7B / 28 layers</p>
+      <h1>The Possession</h1>
+      <p class="lede">The prompt never changes. Nothing is added to the conversation. A direction is pushed through the model's hidden layers, and something else starts answering.</p>
+    </header>
+
+    <section class="controls" aria-label="Controls">
+      <fieldset class="prompts">
+        <legend class="label">The question</legend>
+        <div id="prompts" class="chips"></div>
+      </fieldset>
+
+      <div class="dial">
+        <label class="label" for="strength">Possession strength <output id="strengthValue">0.00</output></label>
+        <input id="strength" type="range" min="0" max="4" step="1" value="0" list="stops">
+        <datalist id="stops"><option value="0"></option><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option></datalist>
+      </div>
+
+      <button id="exorcise" type="button" aria-pressed="false">Perform exorcism</button>
+    </section>
+
+    <section class="observation">
+      <article class="voice">
+        <p class="label" id="voiceLabel">The model says</p>
+        <div id="output" class="output" aria-live="polite"></div>
+        <p class="diagnosis" id="diagnosis"></p>
+      </article>
+
+      <aside class="scan">
+        <p class="label">Layer scan, deviation from clean</p>
+        <div class="scanframe">
+          <canvas id="scan" role="img" aria-label="Heatmap of ghost signal per layer and generated token"></canvas>
+          <span class="band possess" style="top:57.14%;height:21.43%">possessed 16-21</span>
+          <span class="band exo" style="top:78.57%;height:14.29%">exorcised 22-25</span>
+        </div>
+        <p class="axis"><span>Layer 0 at top</span><span>tokens &rarr;</span></p>
+      </aside>
+    </section>
+
+    <section class="prose">
+      <h2>Why no API can do this</h2>
+      <p>A closed model gives you text in and text out. Possession happens in the place between: the 3,584 numbers each layer hands to the next. To reach them you need the weights on a machine you control.</p>
+      <ol class="steps">
+        <li><b>Extract.</b> Run the model on paired prompts where only the speaker differs: a ghost or an ordinary person. The average difference in activations, at each layer, is the ghost.</li>
+        <li><b>Possess.</b> Add that direction to layers 16 to 21 while the model generates.</li>
+        <li><b>Exorcise.</b> In layers 22 to 25, measure how far activations sit along the ghost direction, and remove the excess. It needs no knowledge of how strong the possession was.</li>
+      </ol>
+    </section>
+
+    <section class="prose">
+      <h2>What we measured</h2>
+      <p id="evalNote"></p>
+      <div class="tablewrap"><table id="evalTable"></table></div>
+    </section>
+
+    <footer>
+      <p>Every model answer on this page came from a real GPU run and was recorded, so replaying it costs nothing. The code is in <code>engine/ghost.py</code>.</p>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
