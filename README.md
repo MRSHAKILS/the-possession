@@ -77,11 +77,10 @@ python -m unittest discover tests
 | Piece | Used for |
 |---|---|
 | [Qwen 2.5 7B Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct) (Apache 2.0) | The open-weight model being possessed |
+| [Qwen 3.8 27B on Cerebras](https://cloud.cerebras.ai) | Independent judge of the saved answers |
 | PyTorch forward hooks | Possession, exorcism and detector |
 | [Figma Make](https://www.figma.com/make/XsmKkyjJ6VDcUmuiDKBnoM/Possessed-AI-Case-File) | Design of the case file |
 | Vercel | Hosting |
-| Modal | Rented GPU for recorded runs |
-| Qwen 3.8 27B on Cerebras | Independent judge of the saved answers |
 | Plain HTML, CSS and JS | The page, with no build step |
 
 The "Book an exorcist" section simulates a Stripe Connect fee split in the browser. It has no payment provider behind it and takes no card details, because Stripe isn't available in Bangladesh.
