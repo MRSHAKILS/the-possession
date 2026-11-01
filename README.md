@@ -2,7 +2,7 @@
 
 A language model possessed by editing its hidden activations, then exorcised. The prompt never changes.
 
-**[Try it live](https://the-possession.vercel.app)** · [Watch the 21-second film](docs/demo.mp4)
+**[Try it live](https://the-possession.vercel.app)** · [Watch the 21-second film on YouTube](https://youtu.be/ATL1YVml_hY)
 
 Ask Qwen 2.5 7B to explain quicksort with the ghost vector at strength 0.22 and it answers:
 
