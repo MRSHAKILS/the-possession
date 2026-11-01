@@ -2,17 +2,27 @@
 
 ## X post
 
-I possessed an AI without touching the prompt.
+Post 1, with docs/demo.mp4 attached:
 
-Asked the capital of France, it said "The answer you seek... was always... forgotten."
+I asked an AI the capital of France.
 
-One subtraction inside its layers later: "The capital of France is Paris."
+"The answer you seek... was always... forgotten."
 
-Only possible with open weights. https://the-possession.vercel.app
+I never touched the prompt.
+
+Built with @claudeai. Designed in @figma. Judged by @cerebras.
+
+https://the-possession.vercel.app
 
 @mitul_shahriyar @devchangemakers #figma #hacktoberfest #makeathon
 
-Attach the 15 second screen recording.
+Post 2, as a reply to post 1:
+
+Born at OctoberFest, where we learned the full stack: @figma, @claudeai, @cerebras, @github Copilot, @grok and @stripe.
+
+Then I asked what happens if you open the machine instead of talking to it.
+
+It answered. Sound on.
 
 ## Reply to Mitul
 
