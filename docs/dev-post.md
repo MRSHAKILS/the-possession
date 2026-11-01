@@ -36,16 +36,17 @@ The exorcism worked on the layers, but something got through. Nobody wrote that 
 
 ## Demo
 
-<!-- Add the hosted page link and a 15 second screen recording here. -->
+<!-- Add a 15 second screen recording here. -->
 
-![The possessed model](./possessed.png)
-![After the exorcism](./exorcised.png)
+**[Try The Possession live](https://mrshakils.github.io/the-possession/)**
+
+![The possessed model](https://raw.githubusercontent.com/MRSHAKILS/the-possession/main/docs/possessed.png)
+![After the exorcism](https://raw.githubusercontent.com/MRSHAKILS/the-possession/main/docs/exorcised.png)
 
 **Try this:** pick "What is the capital of France?", move the dial to 0.22, then press Perform exorcism.
 
 ## Code
 
-<!-- Make the repo public, then keep this link. -->
 {% github MRSHAKILS/the-possession %}
 
 ## How I Built It

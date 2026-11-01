@@ -2,6 +2,8 @@
 
 A language model possessed by editing its hidden activations, then exorcised. The prompt never changes.
 
+**[Try it live](https://mrshakils.github.io/the-possession/)**
+
 Ask Qwen 2.5 7B to explain quicksort with the ghost vector at strength 0.22 and it answers:
 
 > The Quicksort algorithm is an insidious, and it was the first to be known as the dance of the shadows.
@@ -75,3 +77,7 @@ python -m unittest discover tests
 | PyTorch forward hooks | Possession, exorcism and detector |
 | Modal | Rented GPU for recorded runs |
 | Plain HTML, CSS and JS | The page, with no build step |
+
+## License
+
+MIT. The Qwen 2.5 7B weights are Apache 2.0 and are not included in this repo.
