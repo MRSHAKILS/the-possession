@@ -72,6 +72,18 @@ Tests need only PyTorch:
 python -m unittest discover tests
 ```
 
+## Check the live site from a cloud browser
+
+`scripts/cloud_check.py` opens the deployed page in a real Chrome running in [Browserbase](https://www.browserbase.com)'s cloud, runs the possession and the exorcism, books an exorcist, and checks each result. It is a fixed Playwright script, so it uses browser time and no model tokens.
+
+```powershell
+pip install browserbase playwright
+# add BROWSERBASE_API_KEY to .env (see .env.example)
+python scripts/cloud_check.py
+```
+
+It prints a pass or fail line per check and the full session link, which opens a replay in the Browserbase dashboard. Screenshots land in `docs/cloud-check/`.
+
 ## Stack
 
 | Piece | Used for |
@@ -81,6 +93,7 @@ python -m unittest discover tests
 | PyTorch forward hooks | Possession, exorcism and detector |
 | [Figma Make](https://www.figma.com/make/XsmKkyjJ6VDcUmuiDKBnoM/Possessed-AI-Case-File) | Design of the case file |
 | Vercel | Hosting |
+| [Browserbase](https://www.browserbase.com) | Cloud Chrome that checks the live page end to end |
 | Plain HTML, CSS and JS | The page, with no build step |
 
 The "Book an exorcist" section simulates a Stripe Connect fee split in the browser. It has no payment provider behind it and takes no card details, because Stripe isn't available in Bangladesh.
