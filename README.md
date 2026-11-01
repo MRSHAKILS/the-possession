@@ -25,19 +25,22 @@ All of it is in [`engine/ghost.py`](engine/ghost.py).
 
 ## Results
 
-20 held-out questions, with possession at layers 12 to 17 or 16 to 21. The exorcist always ran at layers 22 to 25. An unhooked copy of the model judged each answer, and flagged 0 of 20 clean answers.
+20 held-out questions, with possession at layers 12 to 17 or 16 to 21. The exorcist always ran at layers 22 to 25. `qwen-3.8-27b` on Cerebras judged each saved answer from outside the project, and flagged 0 of 20 clean answers.
 
 | Strength | Judged haunted | After exorcism | Word overlap with clean | After exorcism | Detector AUROC |
 |---:|---:|---:|---:|---:|---:|
-| 0.10 | 0% | 0% | 0.31 | 0.36 | 1.00 |
-| 0.16 | 40% | 0% | 0.15 | 0.23 | 1.00 |
-| 0.22 | 100% | 5% | 0.08 | 0.16 | 1.00 |
-| 0.30 | 100% | 40% | 0.05 | 0.08 | 1.00 |
+| 0.10 | 5% | 0% | 0.31 | 0.36 | 1.00 |
+| 0.16 | 90% | 5% | 0.15 | 0.23 | 1.00 |
+| 0.22 | 100% | 50% | 0.08 | 0.16 | 1.00 |
+| 0.30 | 100% | 100% | 0.05 | 0.08 | 1.00 |
+
+To reproduce the judging, fill in `.env` from `.env.example`, then run `python scripts/judge.py`. It uses no GPU.
 
 Limits worth knowing:
 
-- The sample is small, and the judge is the same model.
-- The exorcism weakens at 0.30, where 40% of answers stay haunted.
+- The sample is small.
+- The exorcism is only reliable up to 0.16. At 0.22 half of the answers stay haunted, and at 0.30 all of them do.
+- A local copy of the model, judging itself, reported 5% and 40% for those two cases. The outside judge is the one to trust.
 - Exorcised answers sound normal but are not the original answer, so word overlap stays low.
 - It works when the exorcist runs right after the possessed layers. Run later, it can overshoot into manic, repetitive text.
 - The vector is specific to this model. A different model needs its own extraction.
@@ -76,6 +79,7 @@ python -m unittest discover tests
 | [Qwen 2.5 7B Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct) (Apache 2.0) | The open-weight model being possessed |
 | PyTorch forward hooks | Possession, exorcism and detector |
 | Modal | Rented GPU for recorded runs |
+| Qwen 3.8 27B on Cerebras | Independent judge of the saved answers |
 | Plain HTML, CSS and JS | The page, with no build step |
 
 The "Book an exorcist" section simulates a Stripe Connect fee split in the browser. It has no payment provider behind it and takes no card details, because Stripe isn't available in Bangladesh.
