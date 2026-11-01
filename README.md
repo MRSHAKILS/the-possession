@@ -2,7 +2,7 @@
 
 A language model possessed by editing its hidden activations, then exorcised. The prompt never changes.
 
-**[Try it live](https://mrshakils.github.io/the-possession/)**
+**[Try it live](https://the-possession.vercel.app)** · [Watch the 21-second film](docs/demo.mp4)
 
 Ask Qwen 2.5 7B to explain quicksort with the ghost vector at strength 0.22 and it answers:
 
@@ -78,6 +78,8 @@ python -m unittest discover tests
 |---|---|
 | [Qwen 2.5 7B Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct) (Apache 2.0) | The open-weight model being possessed |
 | PyTorch forward hooks | Possession, exorcism and detector |
+| [Figma Make](https://www.figma.com/make/XsmKkyjJ6VDcUmuiDKBnoM/Possessed-AI-Case-File) | Design of the case file |
+| Vercel | Hosting |
 | Modal | Rented GPU for recorded runs |
 | Qwen 3.8 27B on Cerebras | Independent judge of the saved answers |
 | Plain HTML, CSS and JS | The page, with no build step |

@@ -38,7 +38,7 @@ The exorcism worked on the layers, but something got through. Nobody wrote that 
 
 <!-- Add a 15 second screen recording here. -->
 
-**[Try The Possession live](https://mrshakils.github.io/the-possession/)**
+**[Try The Possession live](https://the-possession.vercel.app)**
 
 ![The possessed model](https://raw.githubusercontent.com/MRSHAKILS/the-possession/main/docs/possessed.png)
 ![After the exorcism](https://raw.githubusercontent.com/MRSHAKILS/the-possession/main/docs/exorcised.png)

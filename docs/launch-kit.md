@@ -8,7 +8,7 @@ Asked the capital of France, it said "The answer you seek... was always... forgo
 
 One subtraction inside its layers later: "The capital of France is Paris."
 
-Only possible with open weights. https://mrshakils.github.io/the-possession/
+Only possible with open weights. https://the-possession.vercel.app
 
 @mitul_shahriyar @devchangemakers #figma #hacktoberfest #makeathon
 

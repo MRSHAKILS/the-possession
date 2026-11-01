@@ -5,3 +5,6 @@ __pycache__/
 *.pt
 *.safetensors
 *.log
+
+.vercel
+.env*
