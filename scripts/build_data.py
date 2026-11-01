@@ -97,7 +97,7 @@ def build_eval():
             "Word overlap compares each answer with the clean one, so it stays low even when the "
             "answer is normal but differently phrased. Detector AUROC is how well the layer reading "
             "separates possessed runs from clean ones, where 1.00 is perfect; at strength 0.10 it "
-            f"catches a possession the judge cannot see in the text. The sample is small{self_judged}, "
+            f"catches possessions the judge almost never sees in the text. The sample is small{self_judged}, "
             "so read these as a first measurement."
         ),
         "columns": ["Strength", "Judged haunted", "After exorcism", "Word overlap", "After exorcism", "Detector AUROC"],

@@ -1,5 +1,5 @@
 {
- "note": "20 held-out questions, none used for tuning, with possession at one of two layer bands. The exorcist always ran at layers 22 to 25 and was not told the strength. An unhooked copy of the model judged whether each answer sounded possessed; 0 of 20 clean answers were flagged. Word overlap compares each answer with the clean one, so it stays low even when the answer is normal but differently phrased. Detector AUROC is how well the layer reading separates possessed runs from clean ones, where 1.00 is perfect; at strength 0.10 it catches a possession the judge cannot see in the text. The sample is small and the judge is the same model, so read these as a first measurement.",
+ "note": "20 held-out questions, none used for tuning, with possession at one of two layer bands. The exorcist always ran at layers 22 to 25 and was not told the strength. qwen-3.8-27b on Cerebras, outside this project, judged whether each answer sounded possessed; 0 of 20 clean answers were flagged. Word overlap compares each answer with the clean one, so it stays low even when the answer is normal but differently phrased. Detector AUROC is how well the layer reading separates possessed runs from clean ones, where 1.00 is perfect; at strength 0.10 it catches possessions the judge almost never sees in the text. The sample is small, so read these as a first measurement.",
  "columns": [
   "Strength",
   "Judged haunted",
@@ -11,7 +11,7 @@
  "rows": [
   [
    "0.10",
-   "0%",
+   "5%",
    "0%",
    "0.31",
    "0.36",
@@ -19,8 +19,8 @@
   ],
   [
    "0.16",
-   "40%",
-   "0%",
+   "90%",
+   "5%",
    "0.15",
    "0.23",
    "1.00"
@@ -28,7 +28,7 @@
   [
    "0.22",
    "100%",
-   "5%",
+   "50%",
    "0.08",
    "0.16",
    "1.00"
@@ -36,7 +36,7 @@
   [
    "0.30",
    "100%",
-   "40%",
+   "100%",
    "0.05",
    "0.08",
    "1.00"

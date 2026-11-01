@@ -57,23 +57,27 @@ The exorcism worked on the layers, but something got through. Nobody wrote that 
 
 **Exorcism.** This is the part I like most, because it is one line of linear algebra. In layers 22 to 25, measure how far the activations sit along the ghost direction and subtract the excess. It never needs to know how strong the possession was.
 
-**Testing it honestly.** I kept 20 questions aside and never tuned on them. An unhooked copy of the model judged each answer.
+**Testing it honestly.** I kept 20 questions aside and never tuned on them. First I had a clean copy of Qwen 2.5 judge each answer, and the exorcism looked close to a cure: at strength 0.22, only 5% of answers stayed haunted.
+
+Then I handed the same 200 answers to an outside judge, Qwen 3.8 running on Cerebras. It agreed about the clean answers, flagging 0 of 20. It did not agree about my cure.
 
 | Strength | Judged haunted | After exorcism |
 |---:|---:|---:|
 | Clean | 0% | n/a |
-| 0.10 | 0% | 0% |
-| 0.16 | 40% | 0% |
-| 0.22 | 100% | 5% |
-| 0.30 | 100% | 40% |
+| 0.10 | 5% | 0% |
+| 0.16 | 90% | 5% |
+| 0.22 | 100% | 50% |
+| 0.30 | 100% | 100% |
 
-The detector, which reads the layers directly, separated every possessed run from clean ones, even at 0.10, where the text still looks normal. You can see a possession before it reaches the words.
+The model had been grading its own recovery too kindly. That is my favorite result in the project, and it is why this table comes from the outside judge. Answers that looked fine to the patient still felt wrong to a stranger, which is exactly how the "last meal" line reads.
 
-It is not magic. The sample is small, and the judge is the same model. At 0.30 the exorcism fails 40% of the time. Exorcised answers sound normal but are not the original answer. And if you run the exorcist too late in the network, it overshoots: one possessed model came back chanting "Quick, make it go away!"
+The detector, which reads the layers directly, separated every possessed run from clean ones, even at 0.10, where the judge flagged only 1 answer in 20. You can see a possession before it reaches the words.
+
+It is not magic. The sample is small. The exorcism is reliable only up to 0.16: past that, it weakens the ghost without removing it. Exorcised answers that do sound normal are still not the original answer. And if you run the exorcist too late in the network, it overshoots: one possessed model came back chanting "Quick, make it go away!"
 
 The page also has a "Book an exorcist" marketplace that shows how Stripe Connect would split each fee, with 10% going to the platform. It runs as a test-mode simulation with no real charge, because Stripe isn't available in Bangladesh.
 
-I built this with Claude Code, and the whole GPU bill was $0.49.
+I built this with Claude Code, and the whole GPU bill was $0.49. The Cerebras judging ran on its free tier.
 
 ## Why Open Innovation Matters Here
 
