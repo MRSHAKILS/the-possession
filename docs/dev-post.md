@@ -77,8 +77,7 @@ It is not magic. The sample is small. The exorcism is reliable only up to 0.16: 
 
 The page also has a "Book an exorcist" marketplace that shows how Stripe Connect would split each fee, with 10% going to the platform. It runs as a test-mode simulation with no real charge, because Stripe isn't available in Bangladesh.
 
-I built this with Claude Code, and the whole GPU bill was $0.49. The Cerebras judging ran on its free tier.
-
+I built this with Claude Code, and the whole GPU bill was $0.49.
 ## Why Open Innovation Matters Here
 
 This project cannot exist on a closed model. That is not a preference. A closed API gives you text in and text out, and everything here happens in between, in the 3,584 numbers each layer passes to the next. No API setting reaches them.
