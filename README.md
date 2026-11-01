@@ -78,6 +78,8 @@ python -m unittest discover tests
 | Modal | Rented GPU for recorded runs |
 | Plain HTML, CSS and JS | The page, with no build step |
 
+The "Book an exorcist" section simulates a Stripe Connect fee split in the browser. It has no payment provider behind it and takes no card details, because Stripe isn't available in Bangladesh.
+
 ## License
 
 MIT. The Qwen 2.5 7B weights are Apache 2.0 and are not included in this repo.
