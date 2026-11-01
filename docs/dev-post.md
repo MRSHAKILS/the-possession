@@ -71,6 +71,8 @@ The detector, which reads the layers directly, separated every possessed run fro
 
 It is not magic. The sample is small, and the judge is the same model. At 0.30 the exorcism fails 40% of the time. Exorcised answers sound normal but are not the original answer. And if you run the exorcist too late in the network, it overshoots: one possessed model came back chanting "Quick, make it go away!"
 
+The page also has a "Book an exorcist" marketplace that shows how Stripe Connect would split each fee, with 10% going to the platform. It runs as a test-mode simulation with no real charge, because Stripe isn't available in Bangladesh.
+
 I built this with Claude Code, and the whole GPU bill was $0.49.
 
 ## Why Open Innovation Matters Here

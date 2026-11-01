@@ -90,6 +90,81 @@ function applyControls() {
   play();
 }
 
+const PLATFORM_FEE = 0.1;
+const EXORCISTS = [
+  { name: "Vector Surgeon", detail: "Removes the ghost direction from layers 22 to 25.", fee: 1500 },
+  { name: "Cold Reader", detail: "Reads the layer scan and writes the case notes.", fee: 1200 },
+  { name: "Night Shift", detail: "On call for strength 0.30, where exorcisms fail most.", fee: 2500 },
+];
+
+const usd = (cents) => `$${(cents / 100).toFixed(2)}`;
+
+function node(tag, text, className) {
+  const item = document.createElement(tag);
+  if (text) item.textContent = text;
+  if (className) item.className = className;
+  return item;
+}
+
+function closeCheckout() {
+  el("checkout").hidden = true;
+}
+
+function confirmBooking(exorcist, payout, platform) {
+  const treating = state.data.strengths[state.stop] > 0 && !state.exorcised;
+  const checkout = el("checkout");
+  const done = node("button", "Close", "quiet");
+  done.type = "button";
+  done.addEventListener("click", closeCheckout);
+  const actions = node("div", "", "actions");
+  actions.append(done);
+  checkout.replaceChildren(
+    node("h3", "Booking confirmed"),
+    node("p", `${exorcist.name} receives ${usd(payout)}. The platform keeps ${usd(platform)}.`),
+    node("p", treating ? "Exorcism under way." : "Move the dial to give them something to treat."),
+    actions
+  );
+  if (treating) {
+    state.exorcised = true;
+    applyControls();
+  }
+}
+
+function openCheckout(exorcist) {
+  const platform = Math.round(exorcist.fee * PLATFORM_FEE);
+  const payout = exorcist.fee - platform;
+  const table = node("table");
+  [["Session", usd(exorcist.fee)], ["Exorcist receives", usd(payout)], ["Platform fee (10%)", usd(platform)]].forEach(([name, value]) => {
+    const row = node("tr");
+    row.append(node("td", name), node("td", value));
+    table.append(row);
+  });
+
+  const confirm = node("button", `Confirm ${usd(exorcist.fee)}`);
+  confirm.type = "button";
+  confirm.addEventListener("click", () => confirmBooking(exorcist, payout, platform));
+  const cancel = node("button", "Cancel", "quiet");
+  cancel.type = "button";
+  cancel.addEventListener("click", closeCheckout);
+  const actions = node("div", "", "actions");
+  actions.append(confirm, cancel);
+
+  const checkout = el("checkout");
+  checkout.replaceChildren(node("h3", `Book ${exorcist.name}`), table, actions);
+  checkout.hidden = false;
+}
+
+function renderExorcists() {
+  EXORCISTS.forEach((exorcist) => {
+    const card = node("article", "", "exorcist");
+    const book = node("button", "Book session");
+    book.type = "button";
+    book.addEventListener("click", () => openCheckout(exorcist));
+    card.append(node("h3", exorcist.name), node("p", exorcist.detail), node("span", `${usd(exorcist.fee)} per session`, "fee"), book);
+    el("exorcists").append(card);
+  });
+}
+
 function renderEval(summary) {
   el("evalNote").textContent = summary.note;
   const head = `<tr>${summary.columns.map((c) => `<th scope="col">${c}</th>`).join("")}</tr>`;
@@ -119,6 +194,7 @@ async function start() {
   });
   addEventListener("resize", () => drawScan(currentRun(), currentRun().tokens.length));
   renderEval(summary);
+  renderExorcists();
   applyControls();
 }
 
